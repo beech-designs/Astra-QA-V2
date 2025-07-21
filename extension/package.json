@@ -1,0 +1,28 @@
+{
+  "name": "astra-design-qa",
+  "version": "1.0.0",
+  "description": "AI-powered design QA Chrome extension",
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch",
+    "package": "npm run build && zip -r astra-extension.zip dist/ manifest.json lib/ assets/",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "babel-loader": "^9.1.0",
+    "css-loader": "^6.8.0",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.0",
+    "tailwindcss": "^3.3.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "copy-webpack-plugin": "^11.0.0"
+  }
+}

@@ -1,0 +1,577 @@
+# ✨ Astra - AI-Powered Design QA Chrome Extension
+
+> Transform your design review process with AI-powered insights, accessibility audits, and design token validation—all directly in your browser.
+
+![Astra Extension](https://img.shields.io/badge/Chrome-Extension-green?style=for-the-badge&logo=google-chrome)
+![React](https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react)
+![Claude AI](https://img.shields.io/badge/Claude-3.5_Sonnet-purple?style=for-the-badge)
+![Vercel](https://img.shields.io/badge/Vercel-Backend-black?style=for-the-badge&logo=vercel)
+
+## 🎯 Value Proposition
+
+**Astra eliminates design inconsistencies and accessibility issues before they reach production.**
+
+### **For Design Teams:**
+- ⚡ **Instant Design Audits** - Get AI-powered feedback on visual hierarchy, spacing, and consistency
+- 🎨 **Design Token Validation** - Automatically verify implementation matches design systems
+- 📊 **Shareable Reports** - Generate UUID-based reports for team collaboration
+
+### **For Developers:**
+- ♿ **Accessibility Compliance** - Built-in axe-core integration catches WCAG violations early
+- 🔧 **Zero Setup** - Works on any website with one-click activation
+- 🚀 **CI/CD Ready** - API endpoints ready for automated testing pipelines
+
+### **For Product Teams:**
+- 💰 **Cost Reduction** - Catch design issues before expensive redesigns
+- 📈 **Quality Metrics** - Track design quality scores over time
+- 🤝 **Cross-functional Collaboration** - Bridge design-development communication gaps
+
+---
+
+## 🚀 Features
+
+### **🧠 AI-Powered Analysis**
+- **Claude 3.5 Sonnet Integration** - Advanced design consistency analysis
+- **Visual Hierarchy Review** - Identifies inconsistent spacing, typography, and layouts
+- **Design Pattern Recognition** - Suggests improvements based on best practices
+
+### **♿ Accessibility Excellence**
+- **axe-core Integration** - Industry-standard accessibility testing
+- **WCAG Compliance** - Automated checks for WCAG 2.1 AA standards
+- **Real-time Feedback** - Instant violation detection and remediation guidance
+
+### **🎨 Design System Validation**
+- **Token Comparison** - Validates colors, typography, spacing against design tokens
+- **Drift Detection** - Identifies elements not using defined design system values
+- **JSON Token Support** - Works with any design token format
+
+### **📊 Collaborative Reporting**
+- **UUID-based Sharing** - Secure, shareable report links
+- **PDF Export** - Professional reports for stakeholders
+- **Historical Tracking** - Compare improvements over time
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+graph TB
+    A[Web Page] --> B[Chrome Extension]
+    B --> C[Shadow DOM React App]
+    C --> D[Axe-core Library]
+    C --> E[Design Token Service]
+    C --> F[API Service]
+    F --> G[Vercel Backend]
+    G --> H[Claude 3.5 Sonnet]
+    G --> I[Report Storage]
+    I --> J[Public Report Viewer]
+```
+
+### **Extension Components:**
+- **Content Script** - Injects overlay using Shadow DOM isolation
+- **React UI** - Tabbed interface with accessibility, AI analysis, tokens, and upload
+- **Service Layer** - Modular services for axe-core, tokens, and API communication
+
+### **Backend Infrastructure:**
+- **Next.js API** - RESTful endpoints for Claude integration and report management
+- **Vercel Hosting** - Serverless deployment with global CDN
+- **UUID Storage** - Secure report persistence with expiration
+
+---
+
+## 📋 Prerequisites
+
+### **Required:**
+- Node.js 18+ and npm
+- Chrome Browser (for testing)
+- Anthropic API Key ([Get one here](https://console.anthropic.com/))
+- Vercel Account ([Sign up free](https://vercel.com/signup))
+
+### **Optional:**
+- Git (for version control)
+- Chrome Web Store Developer Account (for publishing)
+
+---
+
+## 🛠️ Complete Setup Guide
+
+### **Phase 1: Backend Deployment**
+
+#### **1. Clone and Setup Backend**
+```bash
+# Create project directory
+mkdir astra-design-qa && cd astra-design-qa
+
+# Setup backend
+mkdir backend && cd backend
+
+# Initialize package.json
+npm init -y
+
+# Install dependencies
+npm install @anthropic-ai/sdk next react react-dom uuid cors
+npm install -D autoprefixer postcss tailwindcss
+```
+
+#### **2. Create Backend Structure**
+```bash
+# Create directory structure
+mkdir -p pages/api/report components lib data
+mkdir -p pages/report styles
+
+# Copy provided backend files from artifacts
+# - pages/api/analyze-design.js
+# - pages/api/report/save.js
+# - pages/api/report/[uuid].js
+# - pages/report/[uuid].js
+# - components/ReportViewer.jsx
+```
+
+#### **3. Configure Environment Variables**
+```bash
+# Create .env.local
+echo "ANTHROPIC_API_KEY=your_anthropic_api_key_here" > .env.local
+
+# Verify Vercel configuration
+cat > vercel.json << EOF
+{
+  "version": 2,
+  "env": {
+    "ANTHROPIC_API_KEY": "@anthropic-api-key"
+  },
+  "functions": {
+    "pages/api/analyze-design.js": {
+      "maxDuration": 30
+    }
+  }
+}
+EOF
+```
+
+#### **4. Deploy to Vercel**
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Set production environment variable
+vercel env add ANTHROPIC_API_KEY production
+# Paste your API key when prompted
+
+# Deploy to production
+vercel --prod
+```
+
+#### **5. Note Your API URL**
+```bash
+# Your API will be available at:
+https://your-project-name.vercel.app
+```
+
+### **Phase 2: Chrome Extension Setup**
+
+#### **1. Create Extension Structure**
+```bash
+# Navigate back to project root
+cd ..
+
+# Create extension directory
+mkdir extension && cd extension
+
+# Initialize package.json
+npm init -y
+
+# Install dependencies
+npm install react react-dom
+npm install -D @babel/core @babel/preset-react babel-loader
+npm install -D css-loader style-loader webpack webpack-cli
+npm install -D copy-webpack-plugin tailwindcss postcss autoprefixer
+```
+
+#### **2. Download Required Libraries**
+```bash
+# Create lib directory
+mkdir -p lib assets/icons popup src/components/tabs
+mkdir -p src/services src/utils src/styles
+
+# Download axe-core (required!)
+curl -o lib/axe.min.js https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.7.2/axe.min.js
+```
+
+#### **3. Copy Extension Files**
+Copy all the provided extension files from the artifacts:
+- `manifest.json`
+- `content.js` and `background.js`  
+- All React components from `src/` directory
+- Service files from `src/services/`
+- Configuration files (`webpack.config.js`, etc.)
+
+#### **4. Update API Configuration**
+```javascript
+// In src/services/apiService.js, update the base URL:
+constructor() {
+  this.baseUrl = 'https://your-vercel-app.vercel.app/api';
+}
+```
+
+#### **5. Create Extension Icons**
+```bash
+# Create simple icons (or use your own)
+# Required sizes: 16x16, 48x48, 128x128
+# Place in assets/icons/ directory
+```
+
+#### **6. Build Extension**
+```bash
+# Build for production
+npm run build
+
+# Package for Chrome Web Store
+npm run package
+```
+
+### **Phase 3: Testing & Deployment**
+
+#### **1. Load Extension in Chrome**
+1. Open Chrome and navigate to `chrome://extensions/`
+2. Enable "Developer mode" (top right toggle)
+3. Click "Load unpacked" and select your `extension/dist` folder
+4. The Astra extension should now appear in your extensions list
+
+#### **2. Test Core Functionality**
+```bash
+# Test checklist:
+✅ Extension loads without errors
+✅ Panel appears when clicking extension icon
+✅ Accessibility tab runs axe audit
+✅ AI analysis connects to backend
+✅ Token validation accepts JSON upload
+✅ Reports are saved and shareable
+```
+
+#### **3. Verify Backend Integration**
+```bash
+# Test API endpoints directly:
+curl -X POST https://your-app.vercel.app/api/analyze-design \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com","html":"<h1>Test</h1>"}'
+```
+
+---
+
+## 🎮 Usage Guide
+
+### **Basic Workflow:**
+
+#### **1. Activate Extension**
+- Click the Astra extension icon or use the keyboard shortcut
+- The floating panel appears on the right side of any webpage
+
+#### **2. Run Accessibility Audit**
+- Navigate to the "Accessibility" tab
+- Click "Run Analysis" to execute axe-core audit
+- Review violations, incomplete checks, and passing tests
+
+#### **3. AI Design Analysis**
+- Switch to the "AI Analysis" tab  
+- Click "Analyze with Claude" to get AI-powered insights
+- Review suggestions for visual hierarchy and consistency
+
+#### **4. Validate Design Tokens**
+- Go to the "Tokens" tab
+- Upload your design tokens JSON file
+- Click "Validate Against Page Styles" to find mismatches
+
+#### **5. Generate Reports**
+- Complete your analysis across all tabs
+- Click "Save Report" to generate a shareable UUID link
+- Share the link with team members for collaborative review
+
+### **Advanced Features:**
+
+#### **Design Token Format**
+```json
+{
+  "color": {
+    "primary": "#0066FF",
+    "secondary": "#6B7280",
+    "background": "#FFFFFF"
+  },
+  "spacing": {
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px"
+  },
+  "typography": {
+    "heading": "24px",
+    "body": "16px"
+  }
+}
+```
+
+#### **API Integration**
+```javascript
+// Programmatic analysis
+const response = await fetch('https://your-app.vercel.app/api/analyze-design', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    url: 'https://example.com',
+    html: document.documentElement.outerHTML,
+    styles: extractedStyles,
+    tokens: designTokens
+  })
+});
+```
+
+---
+
+## 🔧 Configuration
+
+### **Environment Variables**
+
+#### **Backend (.env.local)**
+```bash
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+NODE_ENV=development
+```
+
+#### **Vercel Production**
+```bash
+# Set via Vercel dashboard or CLI
+vercel env add ANTHROPIC_API_KEY production
+vercel env add NODE_ENV production
+```
+
+### **Extension Customization**
+
+#### **Manifest Permissions**
+```json
+{
+  "permissions": [
+    "scripting",
+    "storage", 
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*/*"
+  ]
+}
+```
+
+#### **UI Customization**
+```css
+/* Modify src/styles/tailwind.css */
+.astra-panel {
+  /* Custom styles */
+  --primary-color: #0066FF;
+  --secondary-color: #6B7280;
+}
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### **Common Issues:**
+
+#### **Extension Not Loading**
+```bash
+# Check for errors in Chrome DevTools
+# Console tab should show any React errors
+
+# Verify manifest.json syntax
+npm run build  # Should complete without errors
+```
+
+#### **API Connection Failed**
+```bash
+# Verify backend is deployed
+curl https://your-app.vercel.app/api/analyze-design
+
+# Check CORS configuration
+# Look for Access-Control-Allow-Origin headers
+```
+
+#### **Accessibility Audit Not Running**
+```bash
+# Verify axe-core is loaded
+ls -la extension/lib/axe.min.js
+
+# Check content script permissions
+# Ensure "scripting" permission in manifest.json
+```
+
+#### **Design Token Validation Issues**
+```json
+// Ensure JSON format is correct
+{
+  "color": {
+    "primary": "#0066FF"  // Use hex values
+  },
+  "spacing": {
+    "md": "16px"  // Include units
+  }
+}
+```
+
+### **Debug Mode:**
+```javascript
+// Enable debug logging in src/services/apiService.js
+console.log('Debug mode enabled');
+window.astraDebug = true;
+```
+
+---
+
+## 🚀 Deployment to Chrome Web Store
+
+### **Preparation:**
+1. **Optimize bundle size** - Remove development dependencies
+2. **Test thoroughly** - Verify on multiple websites
+3. **Create store assets** - Screenshots, descriptions, icons
+4. **Review permissions** - Ensure minimal required permissions
+
+### **Submission Process:**
+1. **Zip extension** - `npm run package` creates `astra-extension.zip`
+2. **Chrome Web Store** - Upload via [Developer Dashboard](https://chrome.google.com/webstore/devconsole)
+3. **Store listing** - Add descriptions, screenshots, categories
+4. **Review process** - Usually takes 1-3 days for approval
+
+### **Post-Launch:**
+- **Monitor reviews** - Respond to user feedback
+- **Analytics** - Track usage and crash reports  
+- **Updates** - Use `chrome.runtime.onUpdateAvailable`
+
+---
+
+## 🤝 Contributing
+
+### **Development Setup:**
+```bash
+# Fork the repository
+git clone https://github.com/yourusername/astra-design-qa
+cd astra-design-qa
+
+# Install all dependencies
+cd backend && npm install
+cd ../extension && npm install
+
+# Run in development mode
+npm run dev  # Backend
+npm run dev  # Extension (separate terminal)
+```
+
+### **Code Standards:**
+- **ESLint** - Follow provided configuration
+- **Prettier** - Auto-format code
+- **JSDoc** - Document public APIs
+- **Testing** - Add tests for new features
+
+### **Pull Request Process:**
+1. Create feature branch: `git checkout -b feature/amazing-feature`
+2. Commit changes: `git commit -m 'Add amazing feature'`
+3. Push to branch: `git push origin feature/amazing-feature`  
+4. Open Pull Request with detailed description
+
+---
+
+## 📊 Performance Considerations
+
+### **Extension Optimization:**
+- **Lazy Loading** - Components load on-demand
+- **Shadow DOM** - Complete style isolation
+- **Debounced Analysis** - Prevents excessive API calls
+- **Local Caching** - Stores results for 1 hour
+
+### **Backend Optimization:**
+- **Serverless Functions** - Auto-scaling with usage
+- **CDN Distribution** - Global edge caching
+- **Rate Limiting** - Prevents API abuse
+- **Response Compression** - Reduced bandwidth usage
+
+---
+
+## 🔐 Security & Privacy
+
+### **Data Handling:**
+- **No persistent storage** - Page data not retained after analysis
+- **UUID reports** - Unpredictable, secure sharing links  
+- **Local processing** - Accessibility audits run client-side
+- **API key security** - Server-side only, never exposed
+
+### **Permissions:**
+- **Minimal scope** - Only required permissions requested
+- **Active tab only** - No background page monitoring
+- **User consent** - Clear value proposition for each permission
+
+---
+
+## 📈 Roadmap
+
+### **Version 1.1 (Next Release):**
+- [ ] Figma API integration for design comparison
+- [ ] Batch analysis for multiple pages  
+- [ ] Custom rule configuration
+- [ ] Team workspace features
+
+### **Version 1.2 (Future):**
+- [ ] VS Code extension for development workflow
+- [ ] Slack/Discord integration for team notifications
+- [ ] Advanced visual diff algorithms
+- [ ] Machine learning for custom pattern detection
+
+---
+
+## 📝 License
+
+**MIT License** - Feel free to use Astra in your projects, commercial or otherwise.
+
+```
+Copyright (c) 2025 Astra Design QA
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+```
+
+---
+
+## 🆘 Support & Community
+
+### **Get Help:**
+- 📚 **Documentation** - Comprehensive guides and API docs
+- 💬 **Discord Community** - Real-time support and discussions  
+- 🐛 **GitHub Issues** - Bug reports and feature requests
+- 📧 **Email Support** - hello@astra-design-qa.com
+
+### **Stay Updated:**
+- 🐦 **Twitter** - [@AstraDesignQA](https://twitter.com/astradesignqa)
+- 📝 **Blog** - Product updates and design QA insights
+- 📧 **Newsletter** - Monthly tips and new features
+
+---
+
+## 🏆 Credits
+
+**Built with love by the open-source community.**
+
+- **Claude 3.5 Sonnet** - AI analysis capabilities
+- **Axe-core** - Accessibility testing framework  
+- **React** - User interface framework
+- **Tailwind CSS** - Styling and design system
+- **Vercel** - Hosting and serverless functions
+
+---
+
+**Ready to transform your design QA process? Let's get started!** 🚀
+
+*Star this repository if Astra helps improve your design workflow!*
