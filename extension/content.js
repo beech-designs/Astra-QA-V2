@@ -246,7 +246,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function handlePageAnalysis(data, sendResponse) {
   try {
     // Forward to backend API
-    const response = await fetch('https://your-vercel-app.vercel.app/api/analyze-design', {
+    const response = await fetch('https://astra-qa-v2.vercel.app/api/analyze-design', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)

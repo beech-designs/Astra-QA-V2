@@ -21,7 +21,7 @@ function AITab({ pageData }) {
       };
       
       // Send to backend API
-      const response = await fetch('https://your-app.vercel.app/api/analyze-design', {
+      const response = await fetch('https://astra-qa-v2.vercel.app/api/analyze-design', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(analysisData)

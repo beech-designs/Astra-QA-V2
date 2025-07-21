@@ -1,7 +1,7 @@
 // src/services/apiService.js - Backend API Communication
 export class ApiService {
   constructor() {
-    this.baseUrl = 'https://your-astra-app.vercel.app/api';
+    this.baseUrl = 'https://astra-qa-v2.vercel.app/api';
   }
   
   async analyzeWithClaude(pageData) {
